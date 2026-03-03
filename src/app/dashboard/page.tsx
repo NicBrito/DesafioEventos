@@ -2,28 +2,28 @@ import { DashboardLayout } from '@/components/shared/DashboardLayout';
 import { StatCard } from '@/components/ui/StatCard';
 
 export default function DashboardPage() {
-  
+
   const stats = {
-    totalEvents: 12, [cite: 28]
-    totalParticipants: 450, [cite: 29]
+    totalEvents: 12,
+    totalParticipants: 450,
     activeRules: 5
   };
 
   return (
     <DashboardLayout>
       <header className="mb-10">
-        <h1 className="text-3xl font-bold text-apple-text tracking-tight">Visão Geral</h1> [cite: 27]
+        <h1 className="text-3xl font-bold text-apple-text tracking-tight">Visão Geral</h1>
         <p className="text-apple-gray mt-2">Bem-vindo ao painel de controle do organizador.</p>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <StatCard label="Total de Eventos" value={stats.totalEvents} description="Eventos cadastrados" /> [cite: 28]
-        <StatCard label="Participantes" value={stats.totalParticipants} description="Inscrições confirmadas" /> [cite: 29]
-        <StatCard label="Check-ins Recentes" value="89%" description="Taxa de comparecimento" /> [cite: 30]
+        <StatCard label="Total de Eventos" value={stats.totalEvents} description="Eventos cadastrados" />
+        <StatCard label="Participantes" value={stats.totalParticipants} description="Inscrições confirmadas" />
+        <StatCard label="Check-ins Recentes" value="89%" description="Taxa de comparecimento" />
       </div>
 
       <section>
-        <h2 className="text-xl font-semibold mb-4">Atividades Recentes</h2> [cite: 30]
+        <h2 className="text-xl font-semibold mb-4">Atividades Recentes</h2> 
         <div className="bg-white rounded-apple border border-black/5 divide-y divide-black/5">
           {/* Mock de lista de atividades */}
           {[1, 2, 3].map((i) => (

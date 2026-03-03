@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Event, EventStatus } from '@/core/types/event';
+import { Event, EventFormData, EventStatus } from '@/core/types/event';
 import { EventService } from '@/services/event.service';
 
 export function useEvents() {
@@ -25,5 +25,11 @@ export function useEvents() {
     });
   }, [events, search, statusFilter]);
 
-  return { filteredEvents, loading, error, search, setSearch, statusFilter, setStatusFilter };
+  const createEvent = async (eventData: EventFormData) => {
+    const createdEvent = await EventService.createEvent(eventData);
+    setEvents((currentEvents) => [createdEvent, ...currentEvents]);
+    return createdEvent;
+  };
+
+  return { filteredEvents, loading, error, search, setSearch, statusFilter, setStatusFilter, createEvent };
 }

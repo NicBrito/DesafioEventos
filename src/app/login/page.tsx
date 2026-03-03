@@ -12,8 +12,8 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
 export default function LoginPage() {
-  const [serverError, setServerError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const setAuth = useAuthStore((state) => state.setAuth);
 
@@ -22,58 +22,58 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginCredentials) => {
-    setIsLoading(true);
-    setServerError(null);
+    setLoading(true);
+    setError(null);
     try {
       const response = await AuthService.login(data);
       setAuth(response.user, response.token);
       router.push('/dashboard');
     } catch (err: any) {
-      setServerError(err.message || 'Erro ao realizar login.'); 
+      setError('Credenciais inválidas. Tente novamente.'); 
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-apple-bg p-4">
-      <Card className="w-full max-w-[400px]">
+      <Card className="w-full max-w-[400px] animate-in fade-in zoom-in duration-300">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-apple-text">Painel do Organizador</h1>
-          <p className="text-apple-gray text-sm mt-2">Entre com suas credenciais</p>
+          <h1 className="text-2xl font-bold text-apple-text tracking-tight">Evento Painel</h1>
+          <p className="text-apple-gray text-sm mt-2">Acesse sua conta de organizador</p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-apple-gray uppercase ml-1 mb-1">E-mail</label>
+            <label className="block text-xs font-semibold text-apple-gray uppercase ml-1 mb-1 tracking-wider">E-mail</label>
             <Input
               type="email"
-              placeholder="exemplo@email.com"
+              placeholder="admin@evento.com"
               {...register('email')}
               className={errors.email ? 'border-apple-error' : ''}
             />
-            {errors.email && <p className="text-apple-error text-xs mt-1 ml-1">{errors.email.message}</p>}
+            {errors.email && <p className="text-apple-error text-[10px] mt-1 ml-1 font-medium">{errors.email.message}</p>}
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-apple-gray uppercase ml-1 mb-1">Senha</label>
+            <label className="block text-xs font-semibold text-apple-gray uppercase ml-1 mb-1 tracking-wider">Senha</label>
             <Input
               type="password"
               placeholder="••••••••"
               {...register('password')}
               className={errors.password ? 'border-apple-error' : ''}
             />
-            {errors.password && <p className="text-apple-error text-xs mt-1 ml-1">{errors.password.message}</p>}
+            {errors.password && <p className="text-apple-error text-[10px] mt-1 ml-1 font-medium">{errors.password.message}</p>}
           </div>
 
-          {serverError && (
-            <div className="p-3 rounded-apple bg-apple-error/10 border border-apple-error/20 text-apple-error text-sm">
-              {serverError}
+          {error && (
+            <div className="p-3 rounded-apple bg-apple-error/10 border border-apple-error/20 text-apple-error text-xs font-medium">
+              {error}
             </div>
           )}
 
-          <Button type="submit" className="w-full mt-4" disabled={isLoading}>
-            {isLoading ? 'Autenticando...' : 'Entrar'}
+          <Button type="submit" className="w-full mt-4" disabled={loading}>
+            {loading ? 'Entrando...' : 'Entrar'}
           </Button>
         </form>
       </Card>

@@ -11,11 +11,14 @@ const config: Config = {
       colors: {
         apple: {
           blue: "#007AFF",
-          gray: "#8E8E93",
-          bg: "#F2F2F7",
-          text: "#1C1C1E",
-          error: "#FF3B30",
-          success: "#34C759",
+            gray: "#8E8E93",
+            bg: "#000000",
+            card: "#1C1C1E",
+            secondary: "#2C2C2E",
+            text: "#FFFFFF",
+            textSecondary: "#A1A1A6",
+            error: "#FF453A",
+            success: "#32D74B",
         }
       },
       borderRadius: {

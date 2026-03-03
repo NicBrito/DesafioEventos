@@ -1,15 +1,17 @@
 import { Card } from './Card';
 
-interface StatCardProps {
-  label: string;
-  value: number | string;
-  description?: string;
-}
-
-export const StatCard = ({ label, value, description }: StatCardProps) => (
-  <Card className="flex flex-col gap-1">
-    <span className="text-apple-gray text-xs font-semibold uppercase tracking-wider">{label}</span>
-    <span className="text-3xl font-bold text-apple-text tracking-tight">{value}</span>
-    {description && <span className="text-apple-gray text-xs mt-1">{description}</span>}
+export const StatCard = ({ label, value, description }: any) => (
+  <Card className="bg-apple-card border border-white/5 p-6 hover:bg-apple-secondary transition-colors">
+    <p className="text-apple-textSecondary text-[10px] font-bold uppercase tracking-widest mb-1">
+      {label}
+    </p>
+    <p className="text-3xl font-bold text-apple-text tracking-tighter">
+      {value}
+    </p>
+    {description && (
+      <p className="text-apple-textSecondary text-xs mt-2 font-medium">
+        {description}
+      </p>
+    )}
   </Card>
 );

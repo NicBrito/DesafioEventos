@@ -2,10 +2,10 @@
 
 import { Button } from '@/components/ui/Button';
 import { useAuthStore } from '@/store/useAuthStore';
+import { Calendar, LayoutDashboard, LogOut, Users } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { ReactNode } from 'react';
-import { LayoutDashboard, Calendar, Users, LogOut } from 'lucide-react';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -19,7 +19,13 @@ const navItems = [
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const logout = useAuthStore((state) => state.logout);
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
 
   return (
     <div className="min-h-screen bg-apple-bg text-apple-text flex">
@@ -59,7 +65,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           <Button
             variant="ghost"
             className="w-full justify-start gap-3 px-4 py-2 text-apple-textSecondary hover:text-apple-error hover:bg-apple-error/10 transition-colors"
-            onClick={logout}
+            onClick={handleLogout}
           >
             <LogOut size={18} />
             <span className="font-semibold text-sm">Sair</span>

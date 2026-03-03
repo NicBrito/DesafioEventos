@@ -1,21 +1,27 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { Event, EventFormData, EventSchema } from '@/core/types/event';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { EventSchema, Event, EventFormData } from '@/core/types/event';
-import { Input } from '../ui/Input';
+import { useForm } from 'react-hook-form';
 import { Button } from '../ui/Button';
+import { Input } from '../ui/Input';
 
 interface EventFormProps {
   onSubmit: (data: EventFormData) => void | Promise<void>;
   initialData?: Partial<Event>;
   isLoading?: boolean;
+  submitLabel?: string;
 }
 
-export function EventForm({ onSubmit, initialData, isLoading }: EventFormProps) {
-  const { register, handleSubmit, formState: { errors } } = useForm({
+export function EventForm({ onSubmit, initialData, isLoading, submitLabel }: EventFormProps) {
+  const { register, handleSubmit, formState: { errors } } = useForm<EventFormData>({
     resolver: zodResolver(EventSchema),
-    defaultValues: initialData || { status: 'Active' }
+    defaultValues: {
+      name: initialData?.name ?? '',
+      date: initialData?.date ?? '',
+      location: initialData?.location ?? '',
+      status: initialData?.status ?? 'Active',
+    }
   });
 
   return (
@@ -35,7 +41,7 @@ export function EventForm({ onSubmit, initialData, isLoading }: EventFormProps) 
           <label className="text-xs font-bold text-apple-textSecondary uppercase tracking-widest ml-1">Status</label>
           <select
             {...register('status')}
-            className="w-full h-[44px] bg-apple-secondary border border-white/10 rounded-apple px-4 text-sm focus:ring-2 focus:ring-apple-blue/50 outline-none"
+            className="select-dark w-full h-[44px] rounded-apple px-4"
           >
             <option value="Active">Ativo</option>
             <option value="Closed">Encerrado</option>
@@ -50,7 +56,7 @@ export function EventForm({ onSubmit, initialData, isLoading }: EventFormProps) 
 
       <div className="pt-4 flex gap-3">
         <Button type="submit" className="flex-1" disabled={isLoading}>
-          {isLoading ? 'Salvando...' : 'Criar Evento'}
+          {isLoading ? 'Salvando...' : submitLabel ?? 'Criar Evento'}
         </Button>
       </div>
     </form>

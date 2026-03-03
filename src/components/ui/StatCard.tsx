@@ -1,6 +1,12 @@
 import { Card } from './Card';
 
-export const StatCard = ({ label, value, description }: any) => (
+interface StatCardProps {
+  label: string;
+  value: string | number;
+  description?: string;
+}
+
+export const StatCard = ({ label, value, description }: StatCardProps) => (
   <Card className="bg-apple-card border border-white/5 p-6 hover:bg-apple-secondary transition-colors">
     <p className="text-apple-textSecondary text-[10px] font-bold uppercase tracking-widest mb-1">
       {label}

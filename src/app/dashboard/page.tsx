@@ -23,16 +23,16 @@ export default function DashboardPage() {
       </div>
 
       <section>
-        <h2 className="text-xl font-semibold mb-4">Atividades Recentes</h2> 
-        <div className="bg-white rounded-apple border border-black/5 divide-y divide-black/5">
+        <h2 className="text-xl font-semibold mb-4">Atividades Recentes</h2>
+        <div className="bg-apple-card rounded-apple border border-white/10 divide-y divide-white/10">
           {/* Mock de lista de atividades */}
           {[1, 2, 3].map((i) => (
             <div key={i} className="p-4 text-sm flex justify-between items-center">
               <div>
-                <p className="font-medium">Novo check-in realizado</p>
-                <p className="text-apple-gray text-xs">Participante #2934 no evento Tech Conf</p>
+                <p className="font-medium text-apple-text">Novo check-in realizado</p>
+                <p className="text-apple-textSecondary text-xs">Participante #2934 no evento Tech Conf</p>
               </div>
-              <span className="text-apple-gray text-xs">há 5 min</span>
+              <span className="text-apple-textSecondary text-xs">há 5 min</span>
             </div>
           ))}
         </div>

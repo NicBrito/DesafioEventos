@@ -1,15 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { LoginSchema, LoginCredentials } from '@/core/types/auth';
-import { AuthService } from '@/services/auth.service';
-import { useAuthStore } from '@/store/useAuthStore';
+import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
+import { LoginCredentials, LoginSchema } from '@/core/types/auth';
+import { AuthService } from '@/services/auth.service';
+import { useAuthStore } from '@/store/useAuthStore';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
@@ -28,8 +28,8 @@ export default function LoginPage() {
       const response = await AuthService.login(data);
       setAuth(response.user, response.token);
       router.push('/dashboard');
-    } catch (err: any) {
-      setError('Credenciais inválidas. Tente novamente.'); 
+    } catch {
+      setError('Credenciais inválidas. Tente novamente.');
     } finally {
       setLoading(false);
     }

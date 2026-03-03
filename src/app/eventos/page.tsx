@@ -1,33 +1,72 @@
 'use client';
 
-import { useState } from 'react';
 import { DashboardLayout } from '@/components/shared/DashboardLayout';
+import { EventForm } from '@/components/shared/EventForm';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
-import { EventForm } from '@/components/shared/EventForm';
+import { Event, EventFormData, EventStatus } from '@/core/types/event';
 import { useEvents } from '@/hooks/useEvents';
-import { EventFormData, EventStatus } from '@/core/types/event';
-import { Calendar, MapPin, MoreHorizontal, Plus, Search, Settings2 } from 'lucide-react';
+import { AlertCircle, Calendar, Eye, MapPin, Plus, Settings2, Trash2 } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function EventsPage() {
-  const { filteredEvents, loading, search, setSearch, statusFilter, setStatusFilter, createEvent } = useEvents();
-  const router = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const {
+    filteredEvents,
+    loading,
+    error,
+    search,
+    setSearch,
+    statusFilter,
+    setStatusFilter,
+    periodFilter,
+    setPeriodFilter,
+    createEvent,
+    updateEvent,
+    deleteEvent,
+  } = useEvents();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState<Event | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Manipulação de criação de evento (Requisito funcional )
   const handleCreateEvent = async (data: EventFormData) => {
     setIsSubmitting(true);
     try {
       await createEvent(data);
-      setIsModalOpen(false);
-      router.push('/eventos');
+      setIsCreateModalOpen(false);
     } catch {
-      console.error('Erro ao criar evento');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEditEvent = async (data: EventFormData) => {
+    if (!selectedEvent) return;
+
+    setIsSubmitting(true);
+    try {
+      await updateEvent(selectedEvent.id, data);
+      setIsEditModalOpen(false);
+      setSelectedEvent(null);
+    } catch {
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteEvent = async () => {
+    if (!eventToDelete) return;
+
+    setIsSubmitting(true);
+    try {
+      await deleteEvent(eventToDelete.id);
+      setEventToDelete(null);
+    } catch {
     } finally {
       setIsSubmitting(false);
     }
@@ -35,30 +74,35 @@ export default function EventsPage() {
 
   return (
     <DashboardLayout>
-      {/* Header com Ação de Criação  */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold text-apple-text tracking-tight">Eventos</h1>
           <p className="text-apple-textSecondary text-sm">Gerencie e monitore as regras de acesso e check-in.</p>
         </div>
-        <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 shadow-lg shadow-apple-blue/20">
+        <Button onClick={() => setIsCreateModalOpen(true)} className="flex items-center gap-2 shadow-lg shadow-apple-blue/20">
           <Plus size={18} /> Novo Evento
         </Button>
       </div>
 
-      {/* Filtros de Busca e Status [cite: 35] */}
+      {error && (
+        <Card className="mb-6 border-apple-error/20 bg-apple-error/10">
+          <p className="text-apple-error text-sm font-medium flex items-center gap-2">
+            <AlertCircle size={16} /> {error}
+          </p>
+        </Card>
+      )}
+
       <div className="flex flex-col md:flex-row gap-4 mb-8">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-apple-textSecondary" size={18} />
           <Input
-            className="pl-10 bg-apple-card border-white/5 text-apple-text"
+            className="bg-apple-card border-white/5 text-apple-text"
             placeholder="Buscar por nome ou local..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <select
-          className="h-[44px] px-4 rounded-apple border border-white/5 bg-apple-card text-apple-text text-sm focus:ring-2 focus:ring-apple-blue/50 outline-none transition-all cursor-pointer"
+          className="select-dark h-[44px] px-4 rounded-apple transition-all cursor-pointer"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as EventStatus | 'All')}
         >
@@ -66,9 +110,19 @@ export default function EventsPage() {
           <option value="Active">Ativos</option>
           <option value="Closed">Encerrados</option>
         </select>
+        <select
+          className="select-dark h-[44px] px-4 rounded-apple transition-all cursor-pointer"
+          value={periodFilter}
+          onChange={(e) => setPeriodFilter(e.target.value as 'All' | '7d' | '30d' | '90d' | 'thisMonth')}
+        >
+          <option value="All">Todo período</option>
+          <option value="7d">Próximos 7 dias</option>
+          <option value="30d">Próximos 30 dias</option>
+          <option value="90d">Próximos 90 dias</option>
+          <option value="thisMonth">Este mês</option>
+        </select>
       </div>
 
-      {/* Grid de Eventos com Feedbacks  */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map(i => (
@@ -96,9 +150,6 @@ export default function EventsPage() {
                   }`}>
                     {event.status === 'Active' ? 'Ativo' : 'Encerrado'}
                   </span>
-                  <button className="text-apple-textSecondary hover:text-white transition-colors">
-                    <MoreHorizontal size={20}/>
-                  </button>
                 </div>
 
                 <h3 className="text-xl font-bold text-apple-text leading-tight mb-3 group-hover:text-apple-blue transition-colors">
@@ -116,30 +167,136 @@ export default function EventsPage() {
               </div>
 
               <div className="mt-8 flex gap-2">
-                <Button variant="secondary" className="flex-1 text-xs h-9 font-bold bg-white/5 hover:bg-white/10 border-white/5">
+                <Button
+                  variant="secondary"
+                  className="flex-1 text-xs h-9 font-bold bg-white/5 hover:bg-white/10 border-white/5"
+                  onClick={() => {
+                    setSelectedEvent(event);
+                    setIsEditModalOpen(true);
+                  }}
+                >
                   Editar
                 </Button>
-                <Link href={`/eventos/${event.id}/checkin`} className="flex-1">
-                  <Button variant="ghost" className="w-full text-xs h-9 font-bold text-apple-blue hover:bg-apple-blue/10">
-                    <Settings2 size={14} className="mr-2" /> Regras
-                  </Button>
-                </Link>
+                <Button
+                  variant="ghost"
+                  className="flex-1 text-xs h-9 font-bold text-apple-blue hover:bg-apple-blue/10"
+                  onClick={() => {
+                    setSelectedEvent(event);
+                    setIsDetailsModalOpen(true);
+                  }}
+                >
+                  <Eye size={14} className="mr-2" /> Detalhes
+                </Button>
+                <Button
+                  variant="danger"
+                  className="h-9 px-3"
+                  onClick={() => setEventToDelete(event)}
+                  aria-label={`Remover ${event.name}`}
+                >
+                  <Trash2 size={14} />
+                </Button>
               </div>
             </Card>
           ))}
         </div>
       )}
 
-      {/* Modal de Criação [cite: 36, 62] */}
       <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
         title="Novo Evento"
       >
         <EventForm
           onSubmit={handleCreateEvent}
           isLoading={isSubmitting}
         />
+      </Modal>
+
+      <Modal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedEvent(null);
+        }}
+        title="Editar Evento"
+      >
+        {selectedEvent && (
+          <EventForm
+            onSubmit={handleEditEvent}
+            initialData={selectedEvent}
+            isLoading={isSubmitting}
+            submitLabel="Salvar Alterações"
+          />
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={isDetailsModalOpen}
+        onClose={() => {
+          setIsDetailsModalOpen(false);
+          setSelectedEvent(null);
+        }}
+        title="Detalhes do Evento"
+      >
+        {selectedEvent && (
+          <div className="space-y-5">
+            <div>
+              <p className="text-xs uppercase tracking-wider text-apple-textSecondary font-bold">Nome</p>
+              <p className="text-lg font-bold text-apple-text mt-1">{selectedEvent.name}</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-wider text-apple-textSecondary font-bold">Data</p>
+                <p className="text-sm text-apple-text mt-1">{selectedEvent.date}</p>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-wider text-apple-textSecondary font-bold">Status</p>
+                <p className="text-sm text-apple-text mt-1">{selectedEvent.status === 'Active' ? 'Ativo' : 'Encerrado'}</p>
+              </div>
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-wider text-apple-textSecondary font-bold">Local</p>
+              <p className="text-sm text-apple-text mt-1">{selectedEvent.location}</p>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <Button
+                variant="secondary"
+                className="flex-1"
+                onClick={() => {
+                  setIsDetailsModalOpen(false);
+                  setIsEditModalOpen(true);
+                }}
+              >
+                Editar Evento
+              </Button>
+              <Link href={`/eventos/${selectedEvent.id}/checkin`} className="flex-1">
+                <Button className="w-full" variant="primary">
+                  <Settings2 size={14} className="mr-2" /> Regras de Check-in
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={Boolean(eventToDelete)}
+        onClose={() => setEventToDelete(null)}
+        title="Remover Evento"
+      >
+        <div className="space-y-6">
+          <p className="text-sm text-apple-textSecondary">
+            Confirma a remoção do evento <span className="font-semibold text-apple-text">{eventToDelete?.name}</span>?
+          </p>
+          <div className="flex gap-3">
+            <Button variant="secondary" className="flex-1" onClick={() => setEventToDelete(null)}>
+              Cancelar
+            </Button>
+            <Button variant="danger" className="flex-1" onClick={handleDeleteEvent} disabled={isSubmitting}>
+              {isSubmitting ? 'Removendo...' : 'Remover'}
+            </Button>
+          </div>
+        </div>
       </Modal>
     </DashboardLayout>
   );

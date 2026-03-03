@@ -2,19 +2,28 @@
 @import "tailwindcss";
 
 :root {
-  background-color: #000000;
-  color: #FFFFFF;
+    background-color: #000000;
+    color: #FFFFFF;
 }
 
 body {
-  @apply bg-apple-bg text-apple-text;
-  -webkit-font-smoothing: antialiased;
+    @apply bg-apple-bg text-apple-text;
+    -webkit-font-smoothing: antialiased;
 }
 
 /* Efeito Glassmorphism Ajustado para Dark Mode */
 .glass {
-  background: rgba(28, 28, 30, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(28, 28, 30, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.select-dark {
+    @apply border border-white/10 bg-apple-card text-apple-text text-sm focus:ring-2 focus:ring-apple-blue/50 outline-none;
+}
+
+.select-dark option {
+    background-color: #1C1C1E;
+    color: #FFFFFF;
 }

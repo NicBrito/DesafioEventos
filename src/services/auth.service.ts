@@ -8,10 +8,10 @@ export const AuthService = {
         if (credentials.email === 'admin@evento.com' && credentials.password === '123456') {
           resolve({
             user: { id: '1', name: 'Organizador Master', email: credentials.email },
-            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' // Mock JWT [cite: 70]
+            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
           });
         } else {
-          reject(new Error('Credenciais inválidas.')); [cite: 25]
+          reject(new Error('Credenciais inválidas.'));
         }
       }, 800);
     });

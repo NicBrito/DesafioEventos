@@ -15,14 +15,14 @@ export default function EventsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold text-apple-text tracking-tight">Eventos</h1>
-          <p className="text-apple-gray text-sm">Gerencie e monitore as regras de acesso[cite: 5].</p>
+          <p className="text-apple-gray text-sm">Gerencie e monitore as regras de acesso.</p>
         </div>
         <Button className="flex items-center gap-2">
-          <Plus size={18} /> Novo Evento [cite: 36]
+          <Plus size={18} /> Novo Evento
         </Button>
       </div>
 
-      {/* Filtros [cite: 35] */}
+      {/* Filtros */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-apple-gray" size={18} />
@@ -44,7 +44,7 @@ export default function EventsPage() {
         </select>
       </div>
 
-      {/* Grid de Eventos [cite: 32] */}
+      {/* Grid de Eventos */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map(i => <Card key={i} className="h-48 animate-pulse bg-gray-100" />)}
@@ -52,7 +52,7 @@ export default function EventsPage() {
       ) : filteredEvents.length === 0 ? (
         <Card className="py-20 text-center flex flex-col items-center gap-2">
           <Calendar className="text-apple-gray/20" size={48} />
-          <p className="text-apple-gray font-medium">Nenhum evento encontrado[cite: 38].</p>
+          <p className="text-apple-gray font-medium">Nenhum evento encontrado.</p>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -63,7 +63,7 @@ export default function EventsPage() {
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                     event.status === 'Active' ? 'bg-apple-success/10 text-apple-success' : 'bg-apple-gray/10 text-apple-gray'
                   }`}>
-                    {event.status === 'Active' ? 'Ativo' : 'Encerrado'} [cite: 33]
+                    {event.status === 'Active' ? 'Ativo' : 'Encerrado'}
                   </span>
                   <button className="text-apple-gray hover:text-apple-text"><MoreHorizontal size={20}/></button>
                 </div>
@@ -75,7 +75,7 @@ export default function EventsPage() {
               </div>
               <div className="mt-6 flex gap-2">
                 <Button variant="secondary" className="flex-1 text-xs h-9">Editar</Button>
-                <Button variant="ghost" className="flex-1 text-xs h-9">Regras [cite: 48]</Button>
+                <Button variant="ghost" className="flex-1 text-xs h-9">Regras</Button>
               </div>
             </Card>
           ))}

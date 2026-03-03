@@ -31,7 +31,7 @@ export default function ParticipantsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-bold text-apple-text tracking-tight">Participantes</h1>
-          <p className="text-apple-gray text-sm">Gerencie inscrições e status de acesso[cite: 39].</p>
+          <p className="text-apple-gray text-sm">Gerencie inscrições e status de acesso.</p>
         </div>
         <Button className="flex items-center gap-2">
           <UserPlus size={18} /> Novo Participante

@@ -7,6 +7,7 @@ import { LoginCredentials, LoginSchema } from '@/core/types/auth';
 import { AuthService } from '@/services/auth.service';
 import { useAuthStore } from '@/store/useAuthStore';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -76,6 +77,13 @@ export default function LoginPage() {
             {loading ? 'Entrando...' : 'Entrar'}
           </Button>
         </form>
+
+        <p className="text-center text-xs text-apple-gray mt-6">
+          Não tem uma conta?{' '}
+          <Link href="/register" className="text-apple-text font-semibold hover:underline">
+            Cadastre-se
+          </Link>
+        </p>
       </Card>
     </div>
   );
